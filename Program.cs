@@ -60,7 +60,7 @@ oOOOOOO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO OOOOOOo
                 assembly.Write(outputPath);
 
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine($"Saved as: {outputPath}");
+                Console.WriteLine($"{outputPath}");
             }
             catch (Exception ex)
             {
@@ -74,4 +74,5 @@ oOOOOOO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO OOOOOOo
             }
         }
     }
+
 }
