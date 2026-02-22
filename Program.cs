@@ -1,38 +1,11 @@
-﻿using System;
+using System;
 using System.IO;
-using System.Text;
 using Mono.Cecil;
 
 namespace AsciiInjector
 {
     class Program
     {
-        private const string WatermarkText = @"// protect by quantum
-// https://t.me/productDuckDuck\n
-
-                   __ooooooooo__
-              oOOOOOOOOOOOOOOOOOOOOOo
-          oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
-       oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
-     oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
-   oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
-  oOOOOOOOOOOO*  *OOOOOOOOOOOOOO*  *OOOOOOOOOOOOo
- oOOOOOOOOOOO      OOOOOOOOOOOO      OOOOOOOOOOOOo
- oOOOOOOOOOOOOo  oOOOOOOOOOOOOOOo  oOOOOOOOOOOOOOo
-oOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
-oOOOO     OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO     OOOOo
-oOOOOOO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO OOOOOOo
- *OOOOO  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO  OOOOO*
- *OOOOOO  *OOOOOOOOOOOOOOOOOOOOOOOOOOOOO*  OOOOOO*
-  *OOOOOO  *OOOOOOOOOOOOOOOOOOOOOOOOOOO*  OOOOOO*
-   *OOOOOOo  *OOOOOOOOOOOOOOOOOOOOOOO*  oOOOOOO*
-     *OOOOOOOo  *OOOOOOOOOOOOOOOOO*  oOOOOOOO*
-       *OOOOOOOOo  *OOOOOOOOOOO*  oOOOOOOOO*      
-          *OOOOOOOOo           oOOOOOOOO*      
-              *OOOOOOOOOOOOOOOOOOOOO*          
-                   ooooooooo
-";
-
         static void Main(string[] args)
         {
             if (args.Length == 0)
@@ -44,23 +17,49 @@ oOOOOOO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO OOOOOOo
 
             string filePath = args[0];
 
-            if (!File.Exists(filePath))
-            {
-                return;
-            }
+            if (!File.Exists(filePath)) return;
 
             try
             {
+                string title = "protect by quantum";
+
+                string padding = new string(' ', 150);
+
+                string link = "// https://t.me/productDuckDuck";
+
+                string[] artLines = new string[]
+                {
+                    "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+                    "⠀⠀⠀⠀⣠⣤⣶⣶⣶⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣶⣶⣶⣤⣄⠀⠀⠀⠀",
+                    "⠀⠀⠀⣼⣿⣿⣿⣿⣿⣿⡿⢂⣠⣤⣤⣤⣤⣄⡐⢿⣿⣿⣿⣿⣿⣿⣷⠀⠀⠀",
+                    "⠀⠀⢸⣿⡏⠉⢻⣿⠋⢉⣴⣿⣿⣿⣿⣿⣿⣿⣿⣦⡉⠙⣿⡟⠉⢙⣿⡇⠀⠀",
+                    "⠀⠀⢸⣿⣷⣶⣿⣿⠃⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⠘⣿⣿⣶⣾⣿⡇⠀⠀",
+                    "⠀⠀⢸⣿⣿⣿⣿⣿⠀⣿⣿⠁⠀⠘⣿⣿⠃⠀⠈⣿⣿⠆⣿⣿⣿⣿⣿⡇⠀⠀",
+                    "⠀⠀⣸⣿⣿⣿⣿⣿⠀⣿⣿⣦⣤⣴⣿⣿⣶⣤⣴⣿⣿⠀⣿⣿⣿⣿⣿⣇⠀⠀",
+                    "⠀⢀⣿⡿⣿⣿⢿⣿⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⣿⡿⣿⣿⢿⣿⡀⠀",
+                    "⠀⠈⠁⠀⠈⠁⠈⠉⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠉⠁⠈⠁⠀⠈⠁⠀",
+                    "⠀⠀⠀⠀⠀⠀⠀⠀⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⠀⠀⠀⠀⠀⠀⠀⠀",
+                    "⠀⠀⠀⠀⠀⠀⠀⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡀⠀⠀⠀⠀⠀⠀⠀",
+                    "⠀⠀⠀⠀⠀⠀⠀⠘⠛⠋⠘⠿⠟⠉⠿⠿⠉⠻⠿⠃⠙⠛⠃⠀⠀⠀⠀⠀⠀⠀",
+                    "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+                    "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀"
+                };
+
+                string art = string.Join("\r\n", artLines);
+
+                string finalWatermark = title + padding + "\r\n" + link + "\r\n\r\n" + art;
+
                 var assembly = AssemblyDefinition.ReadAssembly(filePath, new ReaderParameters { ReadWrite = true });
                 var module = assembly.MainModule;
-                module.Name = WatermarkText;              
+
+                module.Name = finalWatermark;
+
                 string outputFileName = $"{Path.GetFileNameWithoutExtension(filePath)}.saves{Path.GetExtension(filePath)}";
                 string outputPath = Path.Combine(Path.GetDirectoryName(filePath), outputFileName);
 
                 assembly.Write(outputPath);
 
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine($"{outputPath}");
+                Console.WriteLine($"saved as: {outputPath}");
             }
             catch (Exception ex)
             {
@@ -74,5 +73,4 @@ oOOOOOO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO OOOOOOo
             }
         }
     }
-
 }
